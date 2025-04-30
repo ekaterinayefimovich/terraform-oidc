@@ -9,7 +9,7 @@ terraform {
   }
 }
 provider "aws" {
-  region  = "eu-north-1"
+  region = "eu-north-1"
   default_tags {
     tags = {
       Owner = "Katerina-Yefimovich"
