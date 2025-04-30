@@ -9,7 +9,6 @@ terraform {
   }
 }
 provider "aws" {
-  profile = "kate-yefimovich"
   region  = "eu-north-1"
   default_tags {
     tags = {
