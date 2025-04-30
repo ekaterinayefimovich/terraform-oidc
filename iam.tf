@@ -1,6 +1,6 @@
 
 
-resource "aws_iam_role" "github_oidc_provider_role" {  
+resource "aws_iam_role" "github_oidc_provider_role" {
   name = "github-oidc-provider-role"
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
