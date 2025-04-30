@@ -1,9 +1,9 @@
 resource "aws_s3_bucket" "s3_bucket" {
-  bucket = "super-puper-bucket-test-1"
+  bucket = "super-puper-bucket-test-2"
 }
 
 resource "aws_iam_role" "test_role" {
-  name = "test_role_for_pipeline"
+  name = "test_role_for_pipeline_2"
 
   # Terraform's "jsonencode" function converts a
   # Terraform expression result to valid JSON syntax.
