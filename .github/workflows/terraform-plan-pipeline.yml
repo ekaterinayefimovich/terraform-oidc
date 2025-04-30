@@ -75,9 +75,6 @@ jobs:
         id: plan
         run: terraform plan -out=${{ env.TF_ROOT }}/tfplan.cache
         
-      - name: Show Terraform Plan
-        run: terraform show -no-color ${{ env.TF_ROOT }}/tfplan.cache
-        
       - name: Upload plan artifact
         uses: actions/upload-artifact@v4
         with:
