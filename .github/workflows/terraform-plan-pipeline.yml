@@ -34,7 +34,7 @@ jobs:
       - name: Configure AWS credentials via OIDC
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          audience: sts.amazonaws.com.cn
+          audience: sts.amazonaws.com
           aws-region: ${{ env.REGION }}
           role-to-assume: ${{ env.ROLE_ARN }}
 
