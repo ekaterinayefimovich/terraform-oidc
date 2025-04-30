@@ -16,3 +16,12 @@ provider "aws" {
     }
   }
 }
+terraform {
+  backend "s3" {
+    bucket         = "bucket-for-store-tfstate-pipeline-1"
+    key            = "terraform.tfstate"
+    region         = "eu-north-1"
+    encrypt        = true
+    dynamodb_table = "lock-table"
+  }
+}
