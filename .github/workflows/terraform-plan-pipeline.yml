@@ -62,6 +62,11 @@ jobs:
         with:
           path: ${{ env.TF_ROOT }}/.terraform
           key: terraform-${{ hashFiles('**/*.tf') }}
+    
+      - name: Install tflint
+        run: |
+          curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
+          tflint --version
 
       - name: Run tflint
         run: tflint
