@@ -20,7 +20,7 @@ env:
 
 jobs:
   terraform:
-    runs-on: ubuntu-latest
+    runs-on: ghcr.io/ekaterinayefimovich/terraform-oidc:terraformimage-1.11.2
     defaults:
       run:
         working-directory: ${{ env.TF_ROOT }}
