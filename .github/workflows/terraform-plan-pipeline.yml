@@ -18,6 +18,7 @@ env:
 
 jobs:
   terraform:
+    environment: infrastructure
     runs-on: ubuntu-22.04
     container:
       image: ghcr.io/ekaterinayefimovich/terraform-oidc:terraform-ci-1.1
