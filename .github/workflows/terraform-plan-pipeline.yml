@@ -21,7 +21,7 @@ jobs:
     environment: infrastructure
     runs-on: ubuntu-22.04
     container:
-      image: ghcr.io/ekaterinayefimovich/terraform-oidc:terraform-ci-1.1
+      image: ghcr.io/ekaterinayefimovich/terraform-oidc:terraform-ci-1.2
 
     defaults:
       run:
