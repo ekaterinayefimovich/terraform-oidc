@@ -12,17 +12,15 @@ permissions:
   contents: read
 
 env:
-  ENVIRONMENT_NAME: infrastructure
   TF_ROOT: .
-  ROLE_ARN: arn:aws:iam::206767171160:role/github-oidc-provider-role
-  PROJECT_NAME: ${{ github.repository }}
-  REGION: eu-north-1
+  ROLE_ARN: ${{ secrets.ROLE_ARN }}
+  REGION: ${{ secrets.REGION }}
 
 jobs:
   terraform:
     runs-on: ubuntu-22.04
     container:
-      image: ghcr.io/ekaterinayefimovich/terraform-oidc:terraformimage-1.11.2
+      image: ghcr.io/ekaterinayefimovich/terraform-oidc:terraform-ci-1.1
 
     defaults:
       run:
@@ -63,11 +61,6 @@ jobs:
           path: ${{ env.TF_ROOT }}/.terraform
           key: terraform-${{ hashFiles('**/*.tf') }}
     
-      - name: Install tflint
-        run: |
-          curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
-          tflint --version
-
       - name: Run tflint
         run: tflint
 
