@@ -78,7 +78,6 @@ jobs:
 
   apply:
     name: Terraform Apply
-    needs: plan
     if: ${{ github.event_name == 'workflow_dispatch'}}
     environment: infrastructure
     runs-on: ubuntu-22.04
