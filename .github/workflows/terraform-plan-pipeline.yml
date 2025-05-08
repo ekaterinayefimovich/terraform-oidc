@@ -6,6 +6,7 @@ on:
     branches: ["main"]
   pull_request:
     branches: ["main"]
+  workflow_dispatch:
 
 permissions:
   id-token: write
@@ -17,7 +18,8 @@ env:
   REGION: ${{ secrets.REGION }}
 
 jobs:
-  terraform:
+  plan:
+    name: Terraform Plan
     environment: infrastructure
     runs-on: ubuntu-22.04
     container:
@@ -28,7 +30,6 @@ jobs:
         working-directory: ${{ env.TF_ROOT }}
         
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v4
         with:
           fetch-depth: 1
@@ -66,12 +67,47 @@ jobs:
         run: tflint
 
       - name: Terraform Plan
-        id: plan
         run: terraform plan -out=${{ env.TF_ROOT }}/tfplan.cache
         
       - name: Upload plan artifact
         uses: actions/upload-artifact@v4
         with:
-          name: plan
+          name: tfplan
           path: ${{ env.TF_ROOT }}/tfplan.cache
           retention-days: 3
+
+  apply:
+    name: Terraform Apply
+    needs: plan
+    environment: infrastructure
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-22.04
+    container:
+      image: ghcr.io/ekaterinayefimovich/terraform-oidc:terraform-ci-1.2
+
+    defaults:
+      run:
+        working-directory: ${{ env.TF_ROOT }}
+    
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          
+      - name: Configure AWS credentials via OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          audience: sts.amazonaws.com
+          aws-region: ${{ env.REGION }}
+          role-to-assume: ${{ env.ROLE_ARN }}
+
+      - name: Download plan artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: tfplan
+          path: ${{ env.TF_ROOT }}
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve tfplan.cache
+
+    
