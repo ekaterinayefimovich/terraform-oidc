@@ -2,11 +2,11 @@ name: Terraform CI
 
 # Controls when the workflow will run
 on:
+  workflow_dispatch:
   push:
     branches: ["main"]
   pull_request:
     branches: ["main"]
-  workflow_dispatch:
 
 permissions:
   id-token: write
