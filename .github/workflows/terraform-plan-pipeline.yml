@@ -2,7 +2,6 @@ name: Terraform CI
 
 # Controls when the workflow will run
 on:
-  workflow_dispatch:
   push:
     branches: ["main"]
   pull_request:
@@ -20,7 +19,6 @@ env:
 jobs:
   plan:
     name: Terraform Plan
-    if: github.event_name == 'pull_request' || github.event_name == 'push'
     environment: infrastructure
     runs-on: ubuntu-22.04
     container:
@@ -77,10 +75,26 @@ jobs:
           path: ${{ env.TF_ROOT }}/tfplan.cache
           retention-days: 3
 
+
+  approval:
+    name: Approval for Terraform Apply
+    runs-on: ubuntu-22.04
+    needs: plan
+    steps:
+      - name: Manual Approval Step
+        uses: trstringer/manual-approval@v1
+        with:
+          secret: ${{ github.TOKEN }}
+          approvers: ekaterinayefimovich
+          minimum-approvals: 1
+          issue-title: "Terraform Apply Approval"
+          issue-body: "Approve to proceed with 'terraform apply'."
+          exclude-workflow-initiator-as-approver: false
+          
   apply:
     name: Terraform Apply
-    if: github.event_name == 'workflow_dispatch'
     environment: infrastructure
+    needs: approval
     runs-on: ubuntu-22.04
     container:
       image: ghcr.io/ekaterinayefimovich/terraform-oidc:terraform-ci-1.2
