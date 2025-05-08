@@ -20,6 +20,7 @@ env:
 jobs:
   plan:
     name: Terraform Plan
+    if: github.event_name == 'pull_request' || github.event_name == 'push'
     environment: infrastructure
     runs-on: ubuntu-22.04
     container:
@@ -78,7 +79,7 @@ jobs:
 
   apply:
     name: Terraform Apply
-    if: ${{ github.event_name == 'workflow_dispatch'}}
+    if: github.event_name == 'workflow_dispatch'
     environment: infrastructure
     runs-on: ubuntu-22.04
     container:
