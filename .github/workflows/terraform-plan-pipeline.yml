@@ -78,9 +78,8 @@ jobs:
 
   apply:
     name: Terraform Apply
-    needs: plan
-    environment: infrastructure
     if: github.event_name == 'workflow_dispatch'
+    environment: infrastructure
     runs-on: ubuntu-22.04
     container:
       image: ghcr.io/ekaterinayefimovich/terraform-oidc:terraform-ci-1.2
