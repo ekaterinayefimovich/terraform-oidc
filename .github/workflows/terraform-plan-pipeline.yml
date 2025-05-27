@@ -44,6 +44,9 @@ jobs:
       - name: Terraform Init
         id: init
         run: terraform init -reconfigure
+        
+      - name: Show Terraform lock file
+        run: cat .terraform.lock.hcl || echo "Lock file not found"
 
       - name: Terraform Validate
         id: validate
@@ -73,7 +76,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: tfplan
-          path: ${{ env.TF_ROOT }}/tfplan.cache
+          path: |
+            ${{ env.TF_ROOT }}/tfplan.cache
+            ${{ env.TF_ROOT }}/.terraform.lock.hcl
           retention-days: 3
 
 
@@ -121,6 +126,13 @@ jobs:
         with:
           name: tfplan
           path: ${{ env.TF_ROOT }}
+
+      - name: Terraform Init
+        id: init
+        run: terraform init -reconfigure
+        
+      - name: Show Terraform lock file
+        run: cat .terraform.lock.hcl || echo "Lock file not found"
 
       - name: Terraform Apply
         run: terraform apply -auto-approve tfplan.cache
