@@ -56,12 +56,6 @@ jobs:
           if [[ -n "$(terraform fmt -write=false)" ]]; then echo "Some terraform files need be formatted, run 'terraform fmt' to fix"; 
           exit 1; 
           fi
-
-      - name: Cache .terraform dir
-        uses: actions/cache@v4
-        with:
-          path: ${{ env.TF_ROOT }}/.terraform
-          key: terraform-${{ hashFiles('**/*.tf') }}
     
       - name: Run tflint
         run: tflint
@@ -69,35 +63,19 @@ jobs:
       - name: Terraform Plan
         run: terraform plan -out=${{ env.TF_ROOT }}/tfplan.cache
         
-      - name: Upload plan artifact
+      - name: Upload plan artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: tfplan
+          name: terraform-artifacts
           path: |
             ${{ env.TF_ROOT }}/tfplan.cache
             ${{ env.TF_ROOT }}/.terraform.lock.hcl
+            ${{ env.TF_ROOT }}/.terraform/**
           retention-days: 3
-
-
-  approval:
-    name: Approval for Terraform Apply
-    runs-on: ubuntu-22.04
-    needs: plan
-    steps:
-      - name: Manual Approval Step
-        uses: trstringer/manual-approval@v1
-        with:
-          secret: ${{ github.TOKEN }}
-          approvers: ekaterinayefimovich
-          minimum-approvals: 1
-          issue-title: "Terraform Apply Approval"
-          issue-body: "Approve to proceed with 'terraform apply'."
-          exclude-workflow-initiator-as-approver: false
           
   apply:
     name: Terraform Apply
     environment: infrastructure
-    needs: approval
     runs-on: ubuntu-22.04
     container:
       image: ghcr.io/ekaterinayefimovich/terraform-oidc:terraform-ci-1.2
@@ -118,10 +96,10 @@ jobs:
           aws-region: ${{ env.REGION }}
           role-to-assume: ${{ env.ROLE_ARN }}
 
-      - name: Download plan artifact
+      - name: Download terraform artifacts
         uses: actions/download-artifact@v4
         with:
-          name: tfplan
+          name: terraform-artifacts
           path: ${{ env.TF_ROOT }}
 
       - name: Terraform Apply
