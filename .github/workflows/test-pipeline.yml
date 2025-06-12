@@ -11,8 +11,7 @@ permissions:
   contents: read
 
 jobs:
-  build:
+  call-workflow:
     uses: ekaterinayefimovich/terraform-oidc/.github/workflows/terraform-plan-pipeline.yml@main
     with:
       environment_name: infrastructure
-     
