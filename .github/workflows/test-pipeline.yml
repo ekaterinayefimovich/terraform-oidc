@@ -6,6 +6,10 @@ on:
       - "*"
   workflow_dispatch:
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   build:
     uses: ekaterinayefimovich/terraform-oidc/.github/workflows/terraform-plan-pipeline.yml@main
