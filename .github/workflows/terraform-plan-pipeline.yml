@@ -6,14 +6,13 @@ on:
       environment_name:
         required: true
         type: string
+    secrets:
+      ROLE_ARN:
+        required: true
 
 permissions:
   id-token: write
   contents: read
-
-# env:
-#   ROLE_ARN: ${{ secrets.ROLE_ARN }}
-#   REGION: ${{ secrets.REGION }}
 
 jobs:
   plan:
@@ -29,7 +28,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v4
         with:
           audience: sts.amazonaws.com
-          aws-region: ${{ secrets.REGION }}
+          aws-region: ${{ vars.REGION }}
           role-to-assume: ${{ secrets.ROLE_ARN }}
       
       - name: Setup Terraform with specified version on the runner
@@ -68,7 +67,7 @@ jobs:
   apply:
     name: Terraform Apply
     needs: plan
-    environment: infrastructure
+    environment: ${{inputs.environment_name}}
     runs-on: ubuntu-latest
     
     steps:
@@ -78,7 +77,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v4
         with:
           audience: sts.amazonaws.com
-          aws-region: ${{ secrets.REGION }}
+          aws-region: ${{ vars.REGION }}
           role-to-assume: ${{ secrets.ROLE_ARN }}
       
       - name: Setup Terraform with specified version on the runner
