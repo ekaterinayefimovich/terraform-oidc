@@ -80,6 +80,7 @@ jobs:
           
   apply:
     name: Terraform Apply
+    needs: plan
     environment: infrastructure
     runs-on: ubuntu-22.04
     container:
