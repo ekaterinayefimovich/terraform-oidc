@@ -1,6 +1,5 @@
 name: Terraform CI
 
-# Controls when the workflow will run
 on:
   push:
     branches: ["main"]
@@ -10,7 +9,6 @@ on:
 permissions:
   id-token: write
   contents: read
-  issues: write
 
 env:
   TF_ROOT: .
@@ -21,16 +19,15 @@ jobs:
   plan:
     name: Terraform Plan
     environment: infrastructure
-    runs-on: ubuntu-22.04
-    container:
-      image: ghcr.io/ekaterinayefimovich/terraform-oidc:terraform-ci-1.2
+    runs-on: ubuntu-latest
 
     defaults:
       run:
         working-directory: ${{ env.TF_ROOT }}
         
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Repo
+        uses: actions/checkout@v4
         with:
           fetch-depth: 1
           
@@ -40,18 +37,20 @@ jobs:
           audience: sts.amazonaws.com
           aws-region: ${{ env.REGION }}
           role-to-assume: ${{ env.ROLE_ARN }}
+      
+      - name: Setup Terraform with specified version on the runner
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.10.0
 
       - name: Terraform Init
-        id: init
         run: terraform init -reconfigure
 
       - name: Terraform Validate
-        id: validate
         run: |
           terraform validate && echo "√" || exit 1
 
       - name: Terraform Format Check
-        id: fmt
         run: |
           if [[ -n "$(terraform fmt -write=false)" ]]; then echo "Some terraform files need be formatted, run 'terraform fmt' to fix"; 
           exit 1; 
@@ -82,9 +81,7 @@ jobs:
     name: Terraform Apply
     needs: plan
     environment: infrastructure
-    runs-on: ubuntu-22.04
-    container:
-      image: ghcr.io/ekaterinayefimovich/terraform-oidc:terraform-ci-1.2
+    runs-on: ubuntu-latest
 
     defaults:
       run:
