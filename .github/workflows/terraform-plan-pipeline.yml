@@ -1,23 +1,24 @@
 name: Terraform CI
 
 on:
-  push:
-    branches: ["main"]
-  pull_request:
-    branches: ["main"]
+  workflow_call:
+    inputs:
+      environment_name:
+        required: true
+        type: string
 
 permissions:
   id-token: write
   contents: read
 
-env:
-  ROLE_ARN: ${{ secrets.ROLE_ARN }}
-  REGION: ${{ secrets.REGION }}
+# env:
+#   ROLE_ARN: ${{ secrets.ROLE_ARN }}
+#   REGION: ${{ secrets.REGION }}
 
 jobs:
   plan:
     name: Terraform Plan
-    environment: infrastructure
+    environment: ${{inputs.environment_name}}
     runs-on: ubuntu-latest
         
     steps:
@@ -28,8 +29,8 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v4
         with:
           audience: sts.amazonaws.com
-          aws-region: ${{ env.REGION }}
-          role-to-assume: ${{ env.ROLE_ARN }}
+          aws-region: ${{ secrets.REGION }}
+          role-to-assume: ${{ secrets.ROLE_ARN }}
       
       - name: Setup Terraform with specified version on the runner
         uses: hashicorp/setup-terraform@v2
@@ -77,8 +78,8 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v4
         with:
           audience: sts.amazonaws.com
-          aws-region: ${{ env.REGION }}
-          role-to-assume: ${{ env.ROLE_ARN }}
+          aws-region: ${{ secrets.REGION }}
+          role-to-assume: ${{ secrets.ROLE_ARN }}
       
       - name: Setup Terraform with specified version on the runner
         uses: hashicorp/setup-terraform@v2
