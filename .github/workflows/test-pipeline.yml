@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    uses: terraform-oidc/.github/workflows/terraform-plan-pipeline.yml@main
+    uses: ekaterinayefimovich/terraform-oidc/.github/workflows/terraform-plan-pipeline.yml@main
     with:
       environment_name: infrastructure
      
