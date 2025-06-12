@@ -11,7 +11,6 @@ permissions:
   contents: read
 
 env:
-  TF_ROOT: .
   ROLE_ARN: ${{ secrets.ROLE_ARN }}
   REGION: ${{ secrets.REGION }}
 
@@ -20,16 +19,10 @@ jobs:
     name: Terraform Plan
     environment: infrastructure
     runs-on: ubuntu-latest
-
-    defaults:
-      run:
-        working-directory: ${{ env.TF_ROOT }}
         
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
           
       - name: Configure AWS credentials via OIDC
         uses: aws-actions/configure-aws-credentials@v4
@@ -56,19 +49,19 @@ jobs:
       - name: Cache .terraform dir
         uses: actions/cache@v4
         with:
-          path: ${{ env.TF_ROOT }}/.terraform
+          path: .terraform
           key: terraform-${{ hashFiles('**/*.tf') }}
 
       - name: Terraform Plan
-        run: terraform plan -out=${{ env.TF_ROOT }}/tfplan.cache
+        run: terraform plan -out=tfplan.cache
         
       - name: Upload plan artifact
         uses: actions/upload-artifact@v4
         with:
           name: tfplan
           path: |
-            ${{ env.TF_ROOT }}/tfplan.cache
-            ${{ env.TF_ROOT }}/.terraform.lock.hcl
+            tfplan.cache
+            .terraform.lock.hcl
           retention-days: 3
           
   apply:
@@ -76,15 +69,9 @@ jobs:
     needs: plan
     environment: infrastructure
     runs-on: ubuntu-latest
-
-    defaults:
-      run:
-        working-directory: ${{ env.TF_ROOT }}
     
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
           
       - name: Configure AWS credentials via OIDC
         uses: aws-actions/configure-aws-credentials@v4
@@ -102,7 +89,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: tfplan
-          path: ${{ env.TF_ROOT }}
+          path: .
 
       - name: Terraform Init
         id: init
