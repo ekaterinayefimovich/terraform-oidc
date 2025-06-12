@@ -1,0 +1,14 @@
+name: Test Deploy
+
+on:
+  push:
+    branches:
+      - "*"
+  workflow_dispatch:
+
+jobs:
+  build:
+    uses: terraform-oidc/.github/workflows/terraform-plan-pipeline.yml@main
+    with:
+      environment_name: infrastructure
+     
