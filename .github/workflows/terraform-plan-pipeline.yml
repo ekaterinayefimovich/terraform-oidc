@@ -51,10 +51,7 @@ jobs:
           terraform validate && echo "√" || exit 1
 
       - name: Terraform Format Check
-        run: |
-          if [[ -n "$(terraform fmt -write=false)" ]]; then echo "Some terraform files need be formatted, run 'terraform fmt' to fix"; 
-          exit 1; 
-          fi
+        run: terraform fmt -check
 
       - name: Cache .terraform dir
         uses: actions/cache@v4
