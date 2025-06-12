@@ -1,3 +1,3 @@
 resource "aws_s3_bucket" "s3_bucket" {
-  bucket = "super-puper-bucket-test-39"
+  bucket = "super-puper-bucket-test-40"
 }
