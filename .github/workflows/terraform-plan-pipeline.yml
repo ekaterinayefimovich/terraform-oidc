@@ -64,6 +64,7 @@ jobs:
   apply:
     name: Terraform Apply
     needs: plan
+    if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master') && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
     environment: ${{inputs.environment_name}}
     runs-on: ubuntu-latest
     
@@ -93,7 +94,6 @@ jobs:
         run: terraform init -lockfile=readonly
 
       - name: Terraform Apply
-        if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master') && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
         run: terraform apply -auto-approve tfplan.cache
 
     
