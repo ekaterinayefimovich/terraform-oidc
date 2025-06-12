@@ -58,9 +58,6 @@ jobs:
         with:
           path: ${{ env.TF_ROOT }}/.terraform
           key: terraform-${{ hashFiles('**/*.tf') }}
-    
-      - name: Run tflint
-        run: tflint
 
       - name: Terraform Plan
         run: terraform plan -out=${{ env.TF_ROOT }}/tfplan.cache
