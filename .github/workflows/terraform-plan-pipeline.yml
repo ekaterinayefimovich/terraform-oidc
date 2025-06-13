@@ -94,6 +94,6 @@ jobs:
         run: terraform init -lockfile=readonly
 
       - name: Terraform Apply
-        run: terraform apply -auto-approve tfplan.cache
+        run: terraform apply -auto-approve
 
     
