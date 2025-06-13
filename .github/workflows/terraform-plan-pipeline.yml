@@ -43,11 +43,11 @@ jobs:
       - name: Terraform Format Check
         run: terraform fmt -check
 
-      - name: Cache .terraform dir
-        uses: actions/cache@v4
-        with:
-          path: .terraform
-          key: terraform-${{ hashFiles('**/*.tf') }}
+      # - name: Cache .terraform dir
+      #   uses: actions/cache@v4
+      #   with:
+      #     path: .terraform
+      #     key: terraform-${{ hashFiles('**/*.tf') }}
 
       - name: Terraform Plan
         run: terraform plan -out=tfplan.cache
