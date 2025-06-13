@@ -12,6 +12,6 @@ permissions:
 
 jobs:
   call-workflow:
-    uses: ekaterinayefimovich/terraform-oidc/.github/workflows/one-job-pipeline.yml@main
+    uses: ekaterinayefimovich/terraform-oidc/.github/workflows/terraform-plan--pipeline.yml@main
     with:
       environment_name: infrastructure
